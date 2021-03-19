@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Casos Covid RS</title>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  </head>
+  <body>
+    <canvas id="chart-cases-deaths-covid-rs"></canvas>
+  </body>
+</html>
+<script>
+  var url = "https://raw.githubusercontent.com/jaymeanchante/covid/dev/data/covid_cases_deaths.csv"
+  var data;
+  Papa.parse(url, {
+    download: true,
+    complete: function(results) {
+      data = results.data;
+      var dates = []
+      var cases = []
+      var deaths = []
+      for (i=1; i<data.length; i++) {
+        dates.push(data[i][0])
+        cases.push(data[i][1])
+        deaths.push(data[i][2])
+      }
+      var ctx = document.getElementById("chart-cases-deaths-covid-rs").getContext("2d");
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: "line",
+
+          // The data for our dataset
+          data: {
+              labels: dates,
+              datasets: [{
+                  label: "Casos diários",
+                  backgroundColor: "rgb(0, 0, 0)",
+                  borderColor: "rgb(0, 0, 0)",
+                  data: cases,
+                  fill: false,
+                  yAxisID: "y-axis-1"
+              },{
+                  label: "Mortes diárias",
+                  backgroundColor: "rgb(255, 0, 0)",
+                  borderColor: "rgb(255, 0, 0)",
+                  data: deaths,
+                  fill: false,
+                  yAxisID: "y-axis-2"
+              }]
+          },
+          // Configuration options go here
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: [
+                "Dados diários de casos e mortes de covid no RS",
+                "Fonte: Wikipédia"
+              ]
+            },
+            legend: {
+              display: true,
+              position: "bottom"
+            },
+            scales: {
+              yAxes: [{
+                type: "linear",
+                display: true,
+                position: "left",
+                id: "y-axis-1",
+                ticks: {
+                  fontColor: "rgb(0, 0, 0)"
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: "Casos diários",
+                  fontColor: "rgb(0, 0, 0)"
+                }
+              }, {
+                type: "linear",
+                display: true,
+                position: "right",
+                id: "y-axis-2",
+                ticks: {
+                  fontColor: "rgb(255, 0, 0)"
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: "Mortes diárias",
+                  fontColor: "rgb(255, 0, 0)"
+                },
+                gridLines: {
+                  drawOnChartArea: false
+                }
+              }]
+            }
+          }
+      });
+    }
+  });
+</script>
