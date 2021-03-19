@@ -8,6 +8,8 @@
   </head>
   <body>
     <canvas id="chart-cases-deaths-covid-rs"></canvas>
+    <br>
+    <canvas id="chart-mobility-index-rs"></canvas>
   </body>
 </html>
 <script>
@@ -94,6 +96,92 @@
                   drawOnChartArea: false
                 }
               }]
+            }
+          }
+      });
+    }
+  });
+  var url = "https://raw.githubusercontent.com/jaymeanchante/covid/main/data/mobility_index.csv"
+  var data;
+  Papa.parse(url, {
+    download: true,
+    complete: function(results) {
+      data = results.data;
+      var dates = []
+      var retail_and_recreation = []
+      var grocery_and_pharmacy = []
+      var parks = []
+      var transit_stations = []
+      var workplaces = []
+      var residential = []
+      for (i=1; i<data.length; i++) {
+        dates.push(data[i][0])
+        retail_and_recreation.push(data[i][1])
+        grocery_and_pharmacy.push(data[i][2])
+        parks.push(data[i][3])
+        transit_stations.push(data[i][4])
+        workplaces.push(data[i][5])
+        residential.push(data[i][6])
+      }
+      var ctx = document.getElementById("chart-mobility-index-rs").getContext("2d");
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: "line",
+
+          // The data for our dataset
+          data: {
+              labels: dates,
+              datasets: [{
+                  label: "Varejo e recreação",
+                  backgroundColor: "rgb(0, 0, 0)",
+                  borderColor: "rgb(0, 0, 0)",
+                  data: retail_and_recreation,
+                  fill: false
+              },{
+                  label: "Mercado e farmácia",
+                  backgroundColor: "rgb(255, 0, 0)",
+                  borderColor: "rgb(255, 0, 0)",
+                  data: grocery_and_pharmacy,
+                  fill: false
+              },{
+                  label: "Parques",
+                  backgroundColor: "rgb(0, 128, 0)",
+                  borderColor: "rgb(0, 128, 0)",
+                  data: parks,
+                  fill: false
+              },{
+                  label: "Estações de transporte público",
+                  backgroundColor: "rgb(128, 0, 128)",
+                  borderColor: "rgb(128, 0, 128)",
+                  data: transit_stations,
+                  fill: false
+              },{
+                  label: "Locais de trabalho",
+                  backgroundColor: "rgb(255, 165, 0)",
+                  borderColor: "rgb(255, 165, 0)",
+                  data: workplaces,
+                  fill: false
+              },{
+                  label: "Locais residenciais",
+                  backgroundColor: "rgb(255, 255, 0)",
+                  borderColor: "rgb(255, 255, 0)",
+                  data: residential,
+                  fill: false
+              }]
+          },
+          // Configuration options go here
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: [
+                "Dados diários do índice de mobilidade no RS",
+                "Fonte: Google"
+              ]
+            },
+            legend: {
+              display: true,
+              position: "bottom"
             }
           }
       });
