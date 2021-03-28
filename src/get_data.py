@@ -14,9 +14,10 @@ df = df[[("Date", "Date"), ("Date", "Date.1"), ("South", "RS")]].copy()
 df = df.iloc[:-4].copy()
 # remove multiindex
 df.columns = df.columns.droplevel(0)
-df = df.rename(columns={"Date.1": "Type", "RS": "Number"}).copy()
+df = df.rename(columns={"Date": "date", "Date.1": "type", "RS": "number"}).copy()
+df.loc[:, "type"] = df["type"].apply(lambda x: x.lower())
 # reshape data
-df = pd.pivot(df, index="Date", columns="Type", values="Number").reset_index()
+df = pd.pivot(df, index="date", columns="type", values="number").reset_index()
 # fill na
 df = df.fillna(0).copy()
 # save to disk
